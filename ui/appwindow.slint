@@ -1,0 +1,24 @@
+import { Button, VerticalBox, LineEdit } from "std-widgets.slint";
+
+export component AppWindow inherits Window {
+    width: 300px;
+    height: 150px;
+    title: "BEST ACLCULATOIR!!11!one";
+    default-font-size: 15pt;
+
+    in property<string> result;
+
+    callback request-increase-value();
+    callback input-entered(string);
+
+    VerticalBox {
+        LineEdit {
+            accepted() => {
+                root.input-entered(self.text)
+            }
+        }
+        Text {
+            text: root.result;
+        }
+    }
+}
