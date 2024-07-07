@@ -62,10 +62,10 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                         },
                         '(' => token_kind = TokenKind::LParen,
                         ')' => token_kind = TokenKind::RParen,
-                        _ => return Err("Invalid Character".to_string()),
+                        _ => return Err("Invalid character".to_string()),
                     }
                 }
-            _ => return Err("Invalid Character".to_string()),
+            _ => return Err("Invalid character".to_string()),
         }
         tokens.push(Token{
             literal,

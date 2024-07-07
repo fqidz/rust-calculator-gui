@@ -29,7 +29,11 @@ pub fn parse(tokens: Vec<Token>) -> Result<f32, String> {
             _ => return Err("Not an operator or number".to_string()),
         }
     }
-    return Ok(stack[0]);
+    if stack.len() == 1 {
+        return Ok(stack[0]);
+    } else {
+        return Err("Invalid stack size".to_string());
+    }
 }
 
 fn infix_to_postfix(tokens: Vec<Token>) -> Result<Vec<Token>, String> {
@@ -66,10 +70,6 @@ fn infix_to_postfix(tokens: Vec<Token>) -> Result<Vec<Token>, String> {
             output.push(operator);
         }
     }
-    // for t in output {
-    //     print!("{} ", t.literal)
-    // }
-    // println!();
     return Ok(output);
 
 }
