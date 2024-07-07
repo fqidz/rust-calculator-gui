@@ -1,6 +1,38 @@
 use crate::lexer::{Token, TokenKind};
 
 pub fn parse(tokens: Vec<Token>) -> Result<f32, String> {
+    let postfix: Vec<Token> = infix_to_postfix(tokens)?;
+    let mut stack: Vec<f32> = Vec::new();
+    for ref token in postfix {
+        match &token.token_kind {
+            TokenKind::Num => {
+                let num: f32 = match token.literal.parse::<f32>() {
+                    Ok(val) => val,
+                    Err(e) => return Err(e.to_string()),
+                };
+                stack.push(num);
+            },
+            TokenKind::Operator => {
+                if stack.len() < 2 {
+                    return Err("Expected 2 numbers".to_string());
+                }
+                let y: f32 = stack.pop().unwrap();
+                let x: f32 = stack.pop().unwrap();
+                match &token.literal {
+                    o if *o == "+".to_string() => stack.push(x + y),
+                    o if *o == "-".to_string() => stack.push(x - y),
+                    o if *o == "*".to_string() => stack.push(x * y),
+                    o if *o == "/".to_string() => stack.push(x / y),
+                    _ => return Err("Invalid Operator".to_string()),
+                }
+            },
+            _ => return Err("Not an operator or number".to_string()),
+        }
+    }
+    return Ok(stack[0]);
+}
+
+fn infix_to_postfix(tokens: Vec<Token>) -> Result<Vec<Token>, String> {
     let mut output: Vec<Token> = Vec::new();
     let mut operator_stack: Vec<Token> = Vec::new();
     for ref token in tokens {
@@ -15,12 +47,10 @@ pub fn parse(tokens: Vec<Token>) -> Result<f32, String> {
                         break
                     }
                 }
-            }
+            },
             TokenKind::Operator => {
                 while let Some(last_op) = operator_stack.pop() {
                     if last_op.precidence >= token.precidence && last_op.token_kind != TokenKind::LParen {
-                        println!("token        :  {:?}", &token);
-                        println!("last operator: {:?}", &last_op);
                         output.push(last_op);
                     } else {
                         operator_stack.push(last_op);
@@ -28,18 +58,18 @@ pub fn parse(tokens: Vec<Token>) -> Result<f32, String> {
                     }
                 }
                 operator_stack.push(token.clone());
-            }
+            },
         }
-        // println!("output:   {:?}", &output);
-        println!("op stack: {:?}", &operator_stack);
     }
     while !operator_stack.is_empty() {
         if let Some(operator) = operator_stack.pop() {
             output.push(operator);
         }
     }
-    for t in output {
-        println!("{}", t.literal)
-    }
-    return Ok(1.0);
+    // for t in output {
+    //     print!("{} ", t.literal)
+    // }
+    // println!();
+    return Ok(output);
+
 }
