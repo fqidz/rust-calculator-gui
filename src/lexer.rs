@@ -1,9 +1,6 @@
 #[derive(Clone, Debug, PartialEq)]
 pub enum TokenKind {
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
+    Operator,
     Num,
     LParen,
     RParen,
@@ -14,6 +11,7 @@ pub enum TokenKind {
 pub struct Token {
     pub literal: String,
     pub token_kind: TokenKind,
+    pub precidence: i32,
 }
 
 pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
@@ -30,6 +28,7 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
         let start_pos: usize = cur_pos;
         let literal: String;
         let token_kind: TokenKind;
+        let mut precidence: i32 = -1;
         match input_string[cur_pos] {
             c if c.is_numeric() => {
                 let mut dec_count: u16 = 0;
@@ -48,15 +47,24 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
             }
             c if
                 c == '+' || c == '-' ||
-                c == '*' || c == '/' ||
-                c == '(' || c == ')' => {
+                c == '*' || c == '/' || 
+                c == '(' || c == ')' ||
+                c == '^' => {
                     literal = input_string[cur_pos].to_string();
                     cur_pos += 1;
                     match c {
-                        '+' => token_kind = TokenKind::Add,
-                        '-' => token_kind = TokenKind::Subtract,
-                        '*' => token_kind = TokenKind::Multiply,
-                        '/' => token_kind = TokenKind::Divide,
+                        c if c == '+' || c == '-' => {
+                            token_kind = TokenKind::Operator;
+                            precidence = 2;
+                        },
+                        c if c == '*' || c == '/' => {
+                            token_kind = TokenKind::Operator;
+                            precidence = 3;
+                        },
+                        c if c == '^' => {
+                            token_kind = TokenKind::Operator;
+                            precidence = 4;
+                        }
                         '(' => token_kind = TokenKind::LParen,
                         ')' => token_kind = TokenKind::RParen,
                         _ => return Err("Invalid Character".to_string()),
@@ -67,6 +75,7 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
         tokens.push(Token{
             literal,
             token_kind,
+            precidence,
         });
     }
     return Ok(tokens);

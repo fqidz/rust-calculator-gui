@@ -1,9 +1,9 @@
 mod lexer;
 mod parser;
 
-use std::io::{Error, ErrorKind};
+// use std::io::{Error, ErrorKind};
 use lexer::{tokenizer, Token};
-use slint::{SharedString, Weak};
+// use slint::{SharedString, Weak};
 
 slint::include_modules!();
 
@@ -26,6 +26,6 @@ slint::include_modules!();
 //     ui.run()
 // }
 fn main() {
-    let infix: Vec<Token> = tokenizer("1+2-3".to_string()).unwrap();
+    let infix: Vec<Token> = tokenizer("1+2*2+2*3".to_string()).unwrap();
     println!("{:?}", parser::parse(infix))
 }
