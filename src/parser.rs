@@ -8,36 +8,23 @@ pub fn parse(tokens: Vec<Token>) -> Result<f32, String> {
             TokenKind::Num => output.push(token.clone()),
             TokenKind::LParen => operator_stack.push(token.clone()),
             TokenKind::RParen => {
-                if !operator_stack.is_empty() {
-                    loop {
-                        if let Some(last_op) = operator_stack.pop() {
-                            // println!("last operator: {:?}", &last_op);
-                            if last_op.token_kind != TokenKind::LParen {
-                                output.push(last_op);
-                            } else {
-                                break
-                            }
-                        } else {
-                            break
-                        }
+                while let Some(last_op) = operator_stack.pop() {
+                    if last_op.token_kind != TokenKind::LParen {
+                        output.push(last_op);
+                    } else {
+                        break
                     }
                 }
             }
             TokenKind::Operator => {
-                if !operator_stack.is_empty() {
-                    loop {
-                        if let Some(last_op) = operator_stack.pop() {
-                            if last_op.precidence >= token.precidence && last_op.token_kind != TokenKind::LParen {
-                                println!("token        :  {:?}", &token);
-                                println!("last operator: {:?}", &last_op);
-                                output.push(last_op);
-                            } else {
-                                operator_stack.push(last_op);
-                                break
-                            }
-                        } else {
-                            break
-                        }
+                while let Some(last_op) = operator_stack.pop() {
+                    if last_op.precidence >= token.precidence && last_op.token_kind != TokenKind::LParen {
+                        println!("token        :  {:?}", &token);
+                        println!("last operator: {:?}", &last_op);
+                        output.push(last_op);
+                    } else {
+                        operator_stack.push(last_op);
+                        break
                     }
                 }
                 operator_stack.push(token.clone());

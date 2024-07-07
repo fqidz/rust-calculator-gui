@@ -26,6 +26,6 @@ slint::include_modules!();
 //     ui.run()
 // }
 fn main() {
-    let infix: Vec<Token> = tokenizer("3+4*2/(1-5)*2*3".to_string()).unwrap();
+    let infix: Vec<Token> = tokenizer("3+4*2/(1-5*(7+9+3))*2*3".to_string()).unwrap();
     println!("{:?}", parser::parse(infix))
 }
