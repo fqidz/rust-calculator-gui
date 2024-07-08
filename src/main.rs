@@ -38,7 +38,18 @@ fn main() -> Result<(), slint::PlatformError> {
             }
         }
     });
+    ui.on_button_pressed({
+        let ui_handle: Weak<AppWindow> = ui.as_weak();
+        move |string: SharedString| {
+            let ui: AppWindow = ui_handle.unwrap();
 
+            // Program
+            let mut text: String = ui.get_line_edit_text().to_string();
+            text.push_str(&string.to_string());
+            println!("{:?}", text);
+            ui.set_line_edit_text(text.into());
+        }
+    });
     ui.run()
 }
 

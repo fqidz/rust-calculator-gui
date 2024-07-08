@@ -1,4 +1,4 @@
-import { Button, VerticalBox, LineEdit } from "std-widgets.slint";
+import { Button, VerticalBox, LineEdit, HorizontalBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
     width: 300px;
@@ -9,12 +9,14 @@ export component AppWindow inherits Window {
 
     in property<string> result;
     in property<string> errors;
+    in-out property<string> line-edit-text;
 
-    callback request-increase-value();
     callback input-entered(string);
+    callback button-pressed(string);
 
     VerticalBox {
-        LineEdit {
+        input:= LineEdit {
+            text: root.line-edit-text;
             horizontal-alignment: right;
             accepted() => {
                 root.input-entered(self.text);
@@ -22,6 +24,15 @@ export component AppWindow inherits Window {
         }
         Text {
             text: root.result;
+        }
+        HorizontalBox {
+            Button {
+                text: "0";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                }
+            }
         }
     }
 }
