@@ -41,8 +41,8 @@ fn infix_to_postfix(tokens: Vec<Token>) -> Result<Vec<Token>, String> {
     let mut operator_stack: Vec<Token> = Vec::new();
     for ref token in tokens {
         match &token.token_kind {
-            TokenKind::Num => output.push(token.clone()),
-            TokenKind::LParen => operator_stack.push(token.clone()),
+            TokenKind::Num => output.push(token.to_owned()),
+            TokenKind::LParen => operator_stack.push(token.to_owned()),
             TokenKind::RParen => {
                 while let Some(last_op) = operator_stack.pop() {
                     if last_op.token_kind != TokenKind::LParen {
@@ -61,7 +61,7 @@ fn infix_to_postfix(tokens: Vec<Token>) -> Result<Vec<Token>, String> {
                         break
                     }
                 }
-                operator_stack.push(token.clone());
+                operator_stack.push(token.to_owned());
             },
         }
     }

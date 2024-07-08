@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TokenKind {
     Operator,
     Num,
@@ -6,8 +6,7 @@ pub enum TokenKind {
     RParen,
 }
 
-
-#[derive(Clone, Debug)]
+#[derive(Clone, Eq, Debug, PartialEq)]
 pub struct Token {
     pub literal: String,
     pub token_kind: TokenKind,
@@ -33,41 +32,39 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
             c if c.is_numeric() => {
                 let mut dec_count: u16 = 0;
                 // keep including numbers and decimal place
-                while cur_pos < input_string.len() && 
-                    (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.') {
-                        if input_string[cur_pos] == '.' && dec_count == 0 {
-                            dec_count += 1 
-                        } else if input_string[cur_pos] == '.' && dec_count > 0 {
-                            return Err("Number contains multiple decimal points".to_string())
-                        }
-                        cur_pos += 1;
+                while cur_pos < input_string.len()
+                    && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.')
+                {
+                    if input_string[cur_pos] == '.' && dec_count == 0 {
+                        dec_count += 1
+                    } else if input_string[cur_pos] == '.' && dec_count > 0 {
+                        return Err("Number contains multiple decimal points".to_string());
+                    }
+                    cur_pos += 1;
                 }
                 literal = input_string[start_pos..cur_pos].iter().collect::<String>();
                 token_kind = TokenKind::Num;
             }
-            c if
-                c == '+' || c == '-' ||
-                c == '*' || c == '/' || 
-                c == '(' || c == ')' => {
-                    literal = input_string[cur_pos].to_string();
-                    cur_pos += 1;
-                    match c {
-                        c if c == '+' || c == '-' => {
-                            token_kind = TokenKind::Operator;
-                            precidence = 2;
-                        },
-                        c if c == '*' || c == '/' => {
-                            token_kind = TokenKind::Operator;
-                            precidence = 3;
-                        },
-                        '(' => token_kind = TokenKind::LParen,
-                        ')' => token_kind = TokenKind::RParen,
-                        _ => return Err("Invalid character".to_string()),
+            c if c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' => {
+                literal = input_string[cur_pos].to_string();
+                cur_pos += 1;
+                match c {
+                    c if c == '+' || c == '-' => {
+                        token_kind = TokenKind::Operator;
+                        precidence = 2;
                     }
+                    c if c == '*' || c == '/' => {
+                        token_kind = TokenKind::Operator;
+                        precidence = 3;
+                    }
+                    '(' => token_kind = TokenKind::LParen,
+                    ')' => token_kind = TokenKind::RParen,
+                    _ => return Err("Invalid character".to_string()),
                 }
+            }
             _ => return Err("Invalid character".to_string()),
         }
-        tokens.push(Token{
+        tokens.push(Token {
             literal,
             token_kind,
             precidence,
