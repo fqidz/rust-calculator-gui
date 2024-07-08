@@ -13,18 +13,13 @@ pub struct Token {
     pub precidence: i32,
 }
 
-// impl ToString for Vec<Token> {
-//     fn to_string(&self) -> String {
-//         let literals_vec: Vec<String> = self.
-//         return "".to_string();
-//     }
-// }
 pub trait VecTokenToString {
     fn to_string(&self) -> String;
 }
 
 impl VecTokenToString for Vec<Token> {
     fn to_string(&self) -> String {
+        // return self.literal but as string with spaces in between
         return self
             .iter()
             .map(|c| c.literal.as_str())
