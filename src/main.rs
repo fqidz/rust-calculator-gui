@@ -48,8 +48,19 @@ fn main() -> Result<(), slint::PlatformError> {
             // Program
             let mut text: String = ui.get_line_edit_text().to_string();
             text.push_str(&string.to_string());
-            println!("{:?}", text);
+            // println!("{:?}", text);
             ui.set_line_edit_text(text.into());
+        }
+    });
+    ui.on_backspace({
+        let ui_handle: Weak<AppWindow> = ui.as_weak();
+        move |string: SharedString| {
+            let ui: AppWindow = ui_handle.unwrap();
+
+            // Program
+            let mut original_text: std::str::Chars = string.chars();
+            original_text.next_back();
+            ui.set_result(original_text.collect::<String>().into());
         }
     });
     ui.run()
