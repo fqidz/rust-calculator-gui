@@ -37,6 +37,8 @@ fn main() -> Result<(), slint::PlatformError> {
                 // ui.set_result(errors_string.into());
                 ui.set_result("".to_string().into());
                 ui.set_error(errors[0].to_owned().into());
+            } else {
+                ui.set_error("".to_string().into());
             }
         }
     });
