@@ -1,36 +1,182 @@
 import { Button, VerticalBox, LineEdit, HorizontalBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
-    width: 300px;
-    height: 150px;
-    padding: 20px;
+    min-width: 240px;
+    min-height: 290px;
     title: "BEST ACLCULATOIR!!11!one";
     default-font-size: 15pt;
 
-    in property<string> result;
-    in property<string> errors;
+    in-out property<string> result;
+    in property<string> error;
     in-out property<string> line-edit-text;
 
     callback input-entered(string);
     callback button-pressed(string);
 
     VerticalBox {
+        padding-top: 15px;
+        spacing: -10px;
         input:= LineEdit {
             text: root.line-edit-text;
+            height: 17%;
             horizontal-alignment: right;
             accepted() => {
                 root.input-entered(self.text);
+                self.text = root.result;
+                self.placeholder-text = root.error;
+            }
+            edited => {
+                root.line-edit-text = self.text;
             }
         }
-        Text {
-            text: root.result;
+        HorizontalLayout {
+            max-width: 1000px;
+            height: 24px;
         }
         HorizontalBox {
+            Button {
+                text: "7";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "8";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "9";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "/";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+        }
+        HorizontalBox {
+            Button {
+                text: "4";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "5";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "6";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "*";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+        }
+        HorizontalBox {
+            Button {
+                text: "1";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "2";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "3";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "-";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+        }
+        HorizontalBox {
+            Button {
+                text: ".";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
             Button {
                 text: "0";
                 clicked => {
                     input.clear-focus();
                     button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+            Button {
+                text: "=";
+                clicked => {
+                    root.input-entered(input.text);
+                    input.text = root.result;
+                    root.line-edit-text = root.result;
+                    input.placeholder-text = root.error;
+                }
+            }
+            Button {
+                text: "+";
+                clicked => {
+                    input.clear-focus();
+                    button-pressed(self.text);
+                    input.text = root.line-edit-text;
+                }
+            }
+        }
+        HorizontalBox {
+            Button {
+                text: "Clear";
+                clicked => {
+                    input.text = "";
+                    root.result = "";
+                    line-edit-text = "";
                 }
             }
         }

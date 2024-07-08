@@ -33,8 +33,10 @@ fn main() -> Result<(), slint::PlatformError> {
             ui.set_result(result.to_string().into());
 
             if !errors.is_empty() {
-                let errors_string: String = errors.join("\n");
-                ui.set_result(errors_string.into());
+                // let errors_string: String = errors.join("\n");
+                // ui.set_result(errors_string.into());
+                ui.set_result("".to_string().into());
+                ui.set_error(errors[0].to_owned().into());
             }
         }
     });
