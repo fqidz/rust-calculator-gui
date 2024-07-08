@@ -7,7 +7,7 @@ Made entirely for the purpose of learning basic Rust and Slint API.
 
 ## Showcase
 
-![showcase.gif]()
+![showcase.gif](https://github.com/fqidz/rust-calculator-gui/blob/main/showcase.gif)
 
 ## Build
 
