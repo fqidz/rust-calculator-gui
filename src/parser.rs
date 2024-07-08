@@ -1,3 +1,5 @@
+use std::ops::Div;
+
 use crate::lexer::{Token, TokenKind};
 
 pub fn parse(tokens: Vec<Token>) -> Result<f32, String> {
@@ -22,7 +24,13 @@ pub fn parse(tokens: Vec<Token>) -> Result<f32, String> {
                     o if *o == "+".to_string() => stack.push(x + y),
                     o if *o == "-".to_string() => stack.push(x - y),
                     o if *o == "*".to_string() => stack.push(x * y),
-                    o if *o == "/".to_string() => stack.push(x / y),
+                    o if *o == "/".to_string() => {
+                        let ans: f32 = match x.div(y) {
+                            a if a.is_nan() => return Err("Division by zero".to_string()),
+                            val => val,
+                        };
+                        stack.push(ans);
+                    }
                     _ => return Err("Invalid Operator".to_string()),
                 }
             },
