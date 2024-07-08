@@ -1,7 +1,7 @@
 [package]
 name = "rust-calculator-gui"
 version = "0.1.0"
-authors = ["faidz"]
+authors = ["fqidz"]
 edition = "2021"
 build = "build.rs"
 description = "one of the if not the calculator app"
@@ -16,6 +16,6 @@ slint-build = "1.6"
 
 [package.metadata.bundle]
 name = "BEST ACLCULATOIR!!11!one"
-identifier = "io.github.fqidz.rust_calculator"
+identifier = "io.github.fqidz.rust-calculator-gui"
 
 
