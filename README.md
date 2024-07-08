@@ -10,7 +10,7 @@ Made entirely for the purpose of learning basic Rust and Slint API.
 ![showcase.gif](https://github.com/fqidz/rust-calculator-gui/blob/main/showcase.gif)
 
 ## Build
-Windows:\
+Windows:
 ```pwsh
 cargo rustc --release --bin rust-calculator-gui -- -Clink-args="/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
 ```
