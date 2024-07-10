@@ -19,12 +19,26 @@ pub trait VecTokenToString {
 
 impl VecTokenToString for Vec<Token> {
     fn to_string(&self) -> String {
-        // return self.literal but as string with spaces in between
+        // return self.literal but as string with spaces in between numbers and operators
         return self
             .iter()
             .map(|c| c.literal.as_str())
-            .collect::<Vec<&str>>()
-            .join(" ");
+            .fold(String::new(), |mut string, c| {
+                if c == "(" {
+                    if !string.is_empty() && string.chars().last().unwrap() != '(' {
+                        string.push(' ');
+                    }
+                    string.push_str(c);
+                } else if c == ")" {
+                    string.push_str(c);
+                } else {
+                    if !string.is_empty() && string.chars().last().unwrap() != '(' {
+                        string.push(' ');
+                    }
+                    string.push_str(c);
+                }
+                return string;
+            })
     }
 }
 
@@ -53,18 +67,84 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                     if input_string[cur_pos] == '.' && dec_count == 0 {
                         dec_count += 1
                     } else if input_string[cur_pos] == '.' && dec_count > 0 {
-                        return Err("Number contains multiple decimal points".to_string());
+                        return Err(format!("Number contains multiple decimal points at pos {0}", cur_pos).to_string());
                     }
                     cur_pos += 1;
                 }
                 literal = input_string[start_pos..cur_pos].iter().collect::<String>();
                 token_kind = TokenKind::Num;
             }
-            c if c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' => {
+            c if c == '-' => 'subtract: {
+                // // no next char
+                // if input_string.get(cur_pos + 1).is_none() {
+                //     return Err(format!("Invalid operator ({0}) position at pos {1}", c, cur_pos).to_string());
+                // }
+
+                // there is prev char
+                if cur_pos > 0 && input_string.get(cur_pos - 1).is_some() {
+                    let prev_char: char = input_string[cur_pos - 1];
+                    match prev_char {
+                        // prev char is operator
+                        p if p == '+' || p == '-' || p == '*' || p == '/' => {
+                            // therefore it is a unary minus
+                            cur_pos += 1;
+                            // // next char has to be a number
+                            // if !input_string[cur_pos].is_numeric() {
+                            //     return Err(format!("Expected number after operator (-) at pos {0}", cur_pos).to_string());
+                            // }
+                            let mut dec_count: u16 = 0;
+                            while cur_pos < input_string.len() && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.') {
+                                if input_string[cur_pos] == '.' && dec_count == 0 {
+                                    dec_count += 1
+                                } else if input_string[cur_pos] == '.' && dec_count > 0 {
+                                    return Err(format!("Number contains multiple decimal points at pos {0}", cur_pos).to_string());
+                                }
+                                cur_pos += 1;
+                            }
+                            literal = input_string[start_pos..cur_pos].iter().collect::<String>();
+                            token_kind = TokenKind::Num;
+                            break 'subtract;
+                        }
+                        // // prev char and next char is a number
+                        // p if p.is_numeric() && input_string[cur_pos + 1].is_numeric() => {
+                        // }
+                        _ => {
+                            // default to operator
+                            literal = input_string[cur_pos].to_string();
+                            token_kind = TokenKind::Operator;
+                            precidence = 2;
+                            cur_pos += 1;
+                            break 'subtract;  // break out of match
+                        }
+                        
+                    }
+                } else {  // no prev char
+                    cur_pos += 1;
+                    // // next char has to be a number
+                    // if !input_string[cur_pos].is_numeric() {
+                    //     return Err(format!("Expected number after operator (-) at pos {0}", cur_pos).to_string());
+                    // }
+                    let mut dec_count: u16 = 0;
+                    while cur_pos < input_string.len() && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.') {
+                        if input_string[cur_pos] == '.' && dec_count == 0 {
+                            dec_count += 1
+                        } else if input_string[cur_pos] == '.' && dec_count > 0 {
+                            return Err(format!("Number contains multiple decimal points at pos {0}", cur_pos).to_string());
+                        }
+                        cur_pos += 1;
+                    }
+                    literal = input_string[start_pos..cur_pos].iter().collect::<String>();
+                    token_kind = TokenKind::Num;
+                }
+            }
+            c if c == '+' || c == '*' || c == '/' => {
+                // no prev and next char
+                if input_string.get(cur_pos + 1).is_none() || input_string.get(cur_pos - 1).is_none() {
+                    return Err(format!("Invalid operator ({0}) position at pos {1}", c, cur_pos).to_string());
+                }
                 literal = input_string[cur_pos].to_string();
-                cur_pos += 1;
                 match c {
-                    c if c == '+' || c == '-' => {
+                    c if c == '+' => {
                         token_kind = TokenKind::Operator;
                         precidence = 2;
                     }
@@ -76,6 +156,17 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                     ')' => token_kind = TokenKind::RParen,
                     _ => return Err("Invalid character".to_string()),
                 }
+                cur_pos += 1;
+            }
+            '(' => {
+                literal = input_string[cur_pos].to_string();
+                token_kind = TokenKind::LParen;
+                cur_pos += 1;
+            }
+            ')' => {
+                literal = input_string[cur_pos].to_string();
+                token_kind = TokenKind::RParen;
+                cur_pos += 1;
             }
             _ => return Err("Invalid character".to_string()),
         }
