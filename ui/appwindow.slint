@@ -29,9 +29,9 @@ export component AppWindow inherits Window {
                 self.placeholder-text = root.error;
             }
             edited => {
-                // input-edited(self.text);
                 root.line-edit-text = self.text;
-                // self.text = line-edit-text;
+                // input-edited(self.text);
+                //self.text = line-edit-text;
             }
         }
         GridLayout {

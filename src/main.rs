@@ -72,7 +72,14 @@ fn main() -> Result<(), slint::PlatformError> {
 
             // Program
             let mut original_text: std::str::Chars = string.chars();
-            original_text.next_back();
+            // erase each token
+            loop {
+                if let Some(last_char) = original_text.next_back() {
+                    if last_char != ' ' { break; }
+                } else {
+                    break;
+                }
+            }
             ui.set_result(original_text.collect::<String>().into());
         }
     });
