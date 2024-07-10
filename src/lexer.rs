@@ -24,23 +24,15 @@ impl VecTokenToString for Vec<Token> {
             .iter()
             .map(|c| c.literal.as_str())
             .fold(String::new(), |mut string, c| {
-                if c == "(" {
-                    if !string.is_empty() && string.chars().last().unwrap() != '(' {
-                        string.push(' ');
-                    }
-                    string.push_str(c);
-                } else if c == ")" {
-                    string.push_str(c);
-                } else {
-                    if !string.is_empty() && string.chars().last().unwrap() != '(' {
-                        string.push(' ');
-                    }
-                    string.push_str(c);
+                if !string.is_empty() && string.chars().last().unwrap() != '(' && c != ")" {
+                    string.push(' ');
                 }
+                string.push_str(c);
                 return string;
             })
     }
 }
+
 
 pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
     let mut tokens: Vec<Token> = Vec::new();
