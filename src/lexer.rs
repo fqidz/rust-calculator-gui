@@ -29,10 +29,9 @@ impl VecTokenToString for Vec<Token> {
                 }
                 string.push_str(c);
                 return string;
-            })
+            });
     }
 }
-
 
 pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
     let mut tokens: Vec<Token> = Vec::new();
@@ -59,7 +58,11 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                     if input_string[cur_pos] == '.' && dec_count == 0 {
                         dec_count += 1
                     } else if input_string[cur_pos] == '.' && dec_count > 0 {
-                        return Err(format!("Number contains multiple decimal points at pos {0}", cur_pos).to_string());
+                        return Err(format!(
+                            "Number contains multiple decimal points at pos {0}",
+                            cur_pos
+                        )
+                        .to_string());
                     }
                     cur_pos += 1;
                 }
@@ -76,11 +79,18 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                             // therefore it is a unary minus
                             cur_pos += 1;
                             let mut dec_count: u16 = 0;
-                            while cur_pos < input_string.len() && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.') {
+                            while cur_pos < input_string.len()
+                                && (input_string[cur_pos].is_numeric()
+                                    || input_string[cur_pos] == '.')
+                            {
                                 if input_string[cur_pos] == '.' && dec_count == 0 {
                                     dec_count += 1
                                 } else if input_string[cur_pos] == '.' && dec_count > 0 {
-                                    return Err(format!("Number contains multiple decimal points at pos {0}", cur_pos).to_string());
+                                    return Err(format!(
+                                        "Number contains multiple decimal points at pos {0}",
+                                        cur_pos
+                                    )
+                                    .to_string());
                                 }
                                 cur_pos += 1;
                             }
@@ -94,18 +104,24 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                             token_kind = TokenKind::Operator;
                             precidence = 2;
                             cur_pos += 1;
-                            break 'subtract;  // break out of match
+                            break 'subtract; // break out of match
                         }
-                        
                     }
-                } else {  // no prev char
+                } else {
+                    // no prev char
                     cur_pos += 1;
                     let mut dec_count: u16 = 0;
-                    while cur_pos < input_string.len() && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.') {
+                    while cur_pos < input_string.len()
+                        && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.')
+                    {
                         if input_string[cur_pos] == '.' && dec_count == 0 {
                             dec_count += 1
                         } else if input_string[cur_pos] == '.' && dec_count > 0 {
-                            return Err(format!("Number contains multiple decimal points at pos {0}", cur_pos).to_string());
+                            return Err(format!(
+                                "Number contains multiple decimal points at pos {0}",
+                                cur_pos
+                            )
+                            .to_string());
                         }
                         cur_pos += 1;
                     }
@@ -115,8 +131,13 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
             }
             c if c == '+' || c == '*' || c == '/' => {
                 // no prev and next char
-                if input_string.get(cur_pos + 1).is_none() || input_string.get(cur_pos - 1).is_none() {
-                    return Err(format!("Invalid operator ({0}) position at pos {1}", c, cur_pos).to_string());
+                if input_string.get(cur_pos + 1).is_none()
+                    || input_string.get(cur_pos - 1).is_none()
+                {
+                    return Err(
+                        format!("Invalid operator ({0}) position at pos {1}", c, cur_pos)
+                            .to_string(),
+                    );
                 }
                 literal = input_string[cur_pos].to_string();
                 match c {
