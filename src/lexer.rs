@@ -75,11 +75,6 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                 token_kind = TokenKind::Num;
             }
             c if c == '-' => 'subtract: {
-                // // no next char
-                // if input_string.get(cur_pos + 1).is_none() {
-                //     return Err(format!("Invalid operator ({0}) position at pos {1}", c, cur_pos).to_string());
-                // }
-
                 // there is prev char
                 if cur_pos > 0 && input_string.get(cur_pos - 1).is_some() {
                     let prev_char: char = input_string[cur_pos - 1];
@@ -88,10 +83,6 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                         p if p == '+' || p == '-' || p == '*' || p == '/' => {
                             // therefore it is a unary minus
                             cur_pos += 1;
-                            // // next char has to be a number
-                            // if !input_string[cur_pos].is_numeric() {
-                            //     return Err(format!("Expected number after operator (-) at pos {0}", cur_pos).to_string());
-                            // }
                             let mut dec_count: u16 = 0;
                             while cur_pos < input_string.len() && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.') {
                                 if input_string[cur_pos] == '.' && dec_count == 0 {
@@ -105,9 +96,6 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                             token_kind = TokenKind::Num;
                             break 'subtract;
                         }
-                        // // prev char and next char is a number
-                        // p if p.is_numeric() && input_string[cur_pos + 1].is_numeric() => {
-                        // }
                         _ => {
                             // default to operator
                             literal = input_string[cur_pos].to_string();
@@ -120,10 +108,6 @@ pub fn tokenizer(string: String) -> Result<Vec<Token>, String> {
                     }
                 } else {  // no prev char
                     cur_pos += 1;
-                    // // next char has to be a number
-                    // if !input_string[cur_pos].is_numeric() {
-                    //     return Err(format!("Expected number after operator (-) at pos {0}", cur_pos).to_string());
-                    // }
                     let mut dec_count: u16 = 0;
                     while cur_pos < input_string.len() && (input_string[cur_pos].is_numeric() || input_string[cur_pos] == '.') {
                         if input_string[cur_pos] == '.' && dec_count == 0 {
