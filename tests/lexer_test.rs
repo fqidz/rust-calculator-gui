@@ -62,3 +62,25 @@ fn tokenizer_multi_test() {
         Token{literal: ")".to_string(), token_kind: TokenKind::RParen, precidence: -1},
         ], tokenizer("2/5+(2*3)".to_string()).unwrap());
 }
+
+#[test]
+fn tokenizer_unary_minus_test() {
+    assert_eq!(vec![
+        Token{literal: "2".to_string(), token_kind: TokenKind::Num, precidence: -1},
+        Token{literal: "/".to_string(), token_kind: TokenKind::Operator, precidence: 3},
+        Token{literal: "-5".to_string(), token_kind: TokenKind::Num, precidence: -1},
+        Token{literal: "+".to_string(), token_kind: TokenKind::Operator, precidence: 2},
+        Token{literal: "(".to_string(), token_kind: TokenKind::LParen, precidence: -1},
+        Token{literal: "6".to_string(), token_kind: TokenKind::Num, precidence: -1},
+        Token{literal: "*".to_string(), token_kind: TokenKind::Operator, precidence: 3},
+        Token{literal: "7".to_string(), token_kind: TokenKind::Num, precidence: -1},
+        Token{literal: ")".to_string(), token_kind: TokenKind::RParen, precidence: -1},
+        ], tokenizer("2/-5+(6*7)".to_string()).unwrap());
+    assert_eq!(vec![
+        Token{literal: "-2.02".to_string(), token_kind: TokenKind::Num, precidence: -1},
+        Token{literal: "-".to_string(), token_kind: TokenKind::Operator, precidence: 2},
+        Token{literal: "-5.3232".to_string(), token_kind: TokenKind::Num, precidence: -1},
+        Token{literal: "/".to_string(), token_kind: TokenKind::Operator, precidence: 3},
+        Token{literal: "7".to_string(), token_kind: TokenKind::Num, precidence: -1},
+        ], tokenizer("-2.02--5.3232/7".to_string()).unwrap());
+}
